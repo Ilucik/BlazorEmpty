@@ -8,8 +8,7 @@
 @inject FootbalListService footballerList;
 <Drawer Width="500" Closable="true" Visible="visible" Placement="right" Title='("Изменить данные")' OnClose="_=>Close()">
     <FootballerForm footballer="@Footballer"
-                    TM="@TM"
-                    state="FootballerForm.FootbollerFormState.Update">
+                    TM="@TM">
     </FootballerForm>
 </Drawer>
 <Table DataSource="footballerList.FootballersList" Bordered=@true>

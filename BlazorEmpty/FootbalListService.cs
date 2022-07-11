@@ -1,7 +1,6 @@
 ﻿using BlazorEmpty.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorEmpty
@@ -12,7 +11,7 @@ namespace BlazorEmpty
         {
             FootballersList = new List<FootballerView>();
         }
-        public List<FootballerView> FootballersList {get;}
+        public List<FootballerView> FootballersList { get; }
 
         public void Add(FootballerView f)
         {

@@ -1,15 +1,12 @@
+using BlazorEmpty.GraphQl;
+using DataLayer;
+using HotChocolate.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataLayer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace BlazorEmpty
 {
@@ -24,7 +21,7 @@ namespace BlazorEmpty
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddAntDesign();
-            services.AddDbContext<EFDBContext>(op => op.UseNpgsql(connection, b => b.MigrationsAssembly("DataLayer").SetPostgresVersion(new Version(9,6))));
+            services.AddDbContext<EFDBContext>(op => op.UseNpgsql(connection, b => b.MigrationsAssembly("DataLayer").SetPostgresVersion(new Version(9, 6))));
             services.AddScoped<IRepository<Footballer>, EFFootballerRepository>();
             services.AddScoped<IRepository<Team>, EFRepository<Team>>();
             services.AddScoped<DataManager>();
@@ -32,6 +29,9 @@ namespace BlazorEmpty
             services.AddScoped<FootballerService>();
             services.AddSingleton<FootbalListService>();
             services.AddSignalR();
+            services.AddGraphQLServer()
+                .AddQueryType<Queries>()
+                .BindRuntimeType<char, StringType>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +49,7 @@ namespace BlazorEmpty
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapGraphQL("/graphql");
             });
         }
     }

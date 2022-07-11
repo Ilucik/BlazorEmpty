@@ -1,9 +1,8 @@
-﻿using System;
+﻿using BlazorEmpty.ViewModel;
+using DataLayer;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BlazorEmpty.ViewModel;
-using DataLayer;
 
 namespace BlazorEmpty
 {
@@ -60,7 +59,7 @@ namespace BlazorEmpty
             Footballer f = await DataManager.Footballers.GetByIdAsync(footballer.Id);
             if (f is null)
                 f = new();
-            Team team = (await TeamService.GetAsync(e=> e.Name.Equals(footballer.TeamName))).FirstOrDefault();
+            Team team = (await TeamService.GetAsync(e => e.Name.Equals(footballer.TeamName))).FirstOrDefault();
             if (team is null)
                 team = new Team() { Name = footballer.TeamName };
             f.Name = footballer.Name;

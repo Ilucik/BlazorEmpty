@@ -42,16 +42,9 @@
     public IEnumerable<string> TM { get; set; }
     [Parameter]
     public FootballerView footballer { get; set; }
-    [Parameter]
-    public FootbollerFormState state { get; set; }
-    public enum FootbollerFormState
-    {
-        Save,
-        Update
-    }
     private async Task OnFinish(EditContext editContext)
     {
-        if (state == FootbollerFormState.Save)
+        if (footballer.Id == 0)
         {
             footballersList.Add(footballer);
             await footballerService.AddFootballersAsync(footballer);
