@@ -1,0 +1,58 @@
+﻿@page "/footballerList"
+
+@using AntDesign
+@using BlazorEmpty.ViewModel
+@using DataLayer
+@inject FootballerService footballerService
+@inject TeamService teamService
+@inject FootbalListService footballerList;
+<Drawer Width="500" Closable="true" Visible="visible" Placement="right" Title='("Изменить данные")' OnClose="_=>Close()">
+    <FootballerForm footballer="@Footballer"
+                    TM="@TM"
+                    state="FootballerForm.FootbollerFormState.Update">
+    </FootballerForm>
+</Drawer>
+<Table DataSource="footballerList.FootballersList" Bordered=@true>
+    <Column @bind-Field="@context.Name"></Column>
+    <Column @bind-Field="@context.Surname"></Column>
+    <Column @bind-Field="@context.Gender"></Column>
+    <Column @bind-Field="@context.Birthday" Format="dd.MM.yyyy"></Column>
+    <Column @bind-Field="@context.TeamName"></Column>
+    <Column @bind-Field="@context.Country"></Column>
+    <ActionColumn>
+        <Button Danger OnClick="@(()=>Remove(context))">Удалить</Button>
+        <Button Type="@ButtonType.Primary" Ghost OnClick="@(()=>Open(context))">Изменить</Button>
+    </ActionColumn>
+</Table>
+
+@code{
+    private FootballerView Footballer = new FootballerView();
+    private IEnumerable<string> TM;
+    protected override async Task OnInitializedAsync()
+    {
+        if (footballerList.FootballersList.Count == 0)
+            footballerList.FootballersList.AddRange(await footballerService.GetFootballersAsync());
+        footballerList.UpdateEvent += async () => await InvokeAsync(() => this.StateHasChanged());
+        var teams = await teamService.GetTeamsAsync();
+        TM = teams.Select(e => e.Name);
+    }
+
+    private async Task Remove(FootballerView footballer)
+    {
+        await footballerService.RemoveAsync(footballer.Id);
+        footballerList.Remove(footballer);
+    }
+
+    bool visible = false;
+
+    void Open(FootballerView footballer)
+    {
+        visible = true;
+        Footballer = footballer;
+    }
+
+    void Close()
+    {
+        visible = false;
+    }
+}

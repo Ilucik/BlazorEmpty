@@ -1,0 +1,67 @@
+﻿@using BlazorEmpty.ViewModel
+@using AntDesign
+@using Microsoft.AspNetCore.Components.Forms
+
+@inject FootballerService footballerService
+@inject FootbalListService footballersList
+<Form OnFinish="OnFinish" Model="@footballer">
+    <FormItem Label="Имя">
+        <Input @bind-Value="@footballer.Name" MaxLength="25">
+    </FormItem>
+    <FormItem Label="Фамилия">
+        <Input @bind-Value="@footballer.Surname" MaxLength="25">
+    </FormItem>
+    <FormItem>
+        <RadioGroup @bind-Value="@footballer.Gender">
+            <Radio Value="@('м')">М</Radio>
+            <Radio Value="@('ж')">Ж</Radio>
+        </RadioGroup>
+    </FormItem>
+    <FormItem Label="Дата рождения">
+        <DatePicker @bind-Value="@footballer.Birthday" Format="dd/MM/yyyy" DefaultPickerValue="DateTime.Today" />
+    </FormItem>
+    <FormItem Label="Название команды">
+        <AutoComplete @bind-Value="@footballer.TeamName" Options="@TM" />
+    </FormItem>
+    <FormItem Label="Страна">
+        <Select Mode="default"
+                DataSource="@C"
+                @bind-Value="footballer.Country">
+        </Select>
+    </FormItem>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            Отправить
+        </Button>
+    </FormItem>
+</Form>
+
+@code{
+    private string[] C = new string[] { "Россия", "США", "Италия" };
+    [Parameter]
+    public IEnumerable<string> TM { get; set; }
+    [Parameter]
+    public FootballerView footballer { get; set; }
+    [Parameter]
+    public FootbollerFormState state { get; set; }
+    public enum FootbollerFormState
+    {
+        Save,
+        Update
+    }
+    private async Task OnFinish(EditContext editContext)
+    {
+        if (state == FootbollerFormState.Save)
+        {
+            footballersList.Add(footballer);
+            await footballerService.AddFootballersAsync(footballer);
+            footballer = new FootballerView() { Gender = 'м' };
+        }
+
+        else
+        {
+            footballersList.Update();
+            await footballerService.UpdateAsync(footballer);
+        }
+    }
+}

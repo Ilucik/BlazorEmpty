@@ -1,0 +1,22 @@
+﻿@page "/"
+@using DataLayer;
+@using BlazorEmpty.ViewModel
+@inject TeamService teamService;
+<div class="profile">
+    <h1>Добавить футболиста</h1>
+</div>
+<div style="width: 40%">
+    <FootballerForm TM="@TM"
+                    state="FootballerForm.FootbollerFormState.Save"
+                    footballer="@(new FootballerView() { Gender = 'м'})"></FootballerForm>
+</div>
+
+@code {
+    private IEnumerable<string> TM;
+    private IEnumerable<Team> teams;
+    protected override async Task OnInitializedAsync()
+    {
+        teams = await teamService.GetTeamsAsync();
+        TM = teams.Select(e => e.Name);
+    }
+}
